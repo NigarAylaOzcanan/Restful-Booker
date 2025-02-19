@@ -1,0 +1,586 @@
+{
+	"info": {
+		"_postman_id": "c60ff35c-13c3-444a-bc73-0464131cfdf5",
+		"name": "Restful API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "34504181-c60ff35c-13c3-444a-bc73-0464131cfdf5"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "CreateToken",
+					"id": "69e91920-bdf1-4187-8805-ace4f2871542",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"admin\",\r\n    \"password\" : \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/auth",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "a8bf2da7-9325-4020-a339-c4f2bfbb8db9"
+		},
+		{
+			"name": "Booking",
+			"item": [
+				{
+					"name": "GetBookingIds",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.clear();\r",
+									"\r",
+									"pm.sendRequest(\"https://restful-booker.herokuapp.com/booking\", function (err, res) {\r",
+									"    if (!err) {\r",
+									"        let ids = res.json();  // JSON formatında tüm ID'leri al\r",
+									"        let randomIndex = Math.floor(Math.random() * ids.length);  // Rastgele bir index seç\r",
+									"        let randomId = ids[randomIndex].bookingid;  // O index'teki ID'yi al\r",
+									"        \r",
+									"        pm.environment.set(\"bookingId\", randomId);  // Environment değişkenine kaydet\r",
+									"        console.log(\"Selected Booking ID: \" + randomId);  // Seçilen ID’yi konsolda göster\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"id": "8070f6ab-563e-4d27-83c2-9edc91da873c"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [],
+								"type": "text/javascript",
+								"id": "e78f4f83-5a32-48da-9fe1-8d0806188ba5"
+							}
+						}
+					],
+					"id": "bfabcf09-bbbc-4b05-94de-22ae0e47d509",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBooking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code name has string\", function () {\r",
+									"    pm.response.to.have.status(\"OK\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"id": "de2b5dd2-eddc-4c63-a938-0c294641f980"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.clear();\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"id": "44bbaf9e-af4e-425e-aadf-f83e13629694"
+							}
+						}
+					],
+					"id": "24845781-0abb-412b-ada9-4d9677af14bc",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{bookingId}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{bookingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBooking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.clear();\r",
+									"\r",
+									"const firstName = pm.variables.replaceIn('{{$randomFirstName}}'); \r",
+									"console.log(firstName);\r",
+									"// pm.collectionVariables.set(\"fakeFirstName\", firstName);  // fake bir isim oluşturup collection seviyesinde bir değişkene atadım \r",
+									"\r",
+									"\r",
+									"const lastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+									"console.log(lastName);\r",
+									"// pm.collectionVariables.set(\"fakeLastName\", lastName); // aynı şekilde random soyisim atadım\r",
+									"\r",
+									"\r",
+									"const depositPaid = pm.variables.replaceIn('{{$randomBoolean}}');\r",
+									"console.log(depositPaid); \r",
+									"pm.collectionVariables.set(\"fakeDepositPaid\", depositPaid); // random boolean atadım\r",
+									"\r",
+									"\r",
+									"// pm.collectionVariables.unset(\"variable_key\"); // atanan değişkenler bu snippet yardımı ile sonradan silinebilir"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"id": "ff8f3c16-fe4a-4259-baab-2ca601693aeb"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// yanıt verilerinin doğru olduğunu kontrol ettim testler ile...\r",
+									"const jsonData = pm.response.json();\r",
+									"var requestBody= JSON.parse(pm.request.body.raw);\r",
+									"\r",
+									"\r",
+									"console.log(\"Response Data:\", JSON.stringify(jsonData, null, 2));  // Yanıt verisini yazdır\r",
+									"console.log(\"Request Body Data:\", JSON.stringify(requestBody, null, 2));\r",
+									"\r",
+									"pm.test(\" check firstname\", function() {\r",
+									"  \r",
+									"   pm.expect(jsonData.booking.firstname).to.eql(requestBody.firstname);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.test(\"check lastname\", function() {\r",
+									"    pm.expect(jsonData.booking.lastname).to.eql(requestBody.lastname);\r",
+									"\r",
+									"});\r",
+									" \r",
+									"\r",
+									"pm.test(\"Test data type of the response\", () =>{\r",
+									"pm.expect(jsonData.booking.firstname).to.be.a(\"String\");\r",
+									"pm.expect(jsonData.booking.firstname).to.not.be.null;\r",
+									"pm.expect(jsonData.booking.firstname).to.not.be.undefined;\r",
+									"pm.expect(jsonData.booking.totalprice).to.be.a(\"number\");\r",
+									"pm.expect(jsonData.booking.depositpaid).to.be.a(\"boolean\");\r",
+									"\r",
+									"\r",
+									"})\r",
+									"\r",
+									"// pm.collectionVariables.unset(\"fakeDepositPaid\"); // testler bittikten sonra collection seviyesinde oluşturulan variable'ı sildi\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"id": "785eb2ea-8480-4437-8e7c-1852be2848de"
+							}
+						}
+					],
+					"id": "93c1d4f2-5826-45c7-938c-45f0dcbc6cfd",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"{{firstName}}\",\r\n    \"lastname\" : \"{{lastName}}\",\r\n    \"totalprice\" : 450,\r\n    \"depositpaid\" : {{fakeDepositPaid}},\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2024-01-01\",\r\n        \"checkout\" : \"2025-02-05\"\r\n    },\r\n    \"additionalneeds\" : \"Lunch\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBooking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.clear();\r",
+									"\r",
+									"const updatedName =pm.variables.replaceIn('{{$randomFirstName}}');\r",
+									"pm.collectionVariables.set(\"updatedFirstName\", updatedName);\r",
+									"\r",
+									"console.log(updatedName);\r",
+									"\r",
+									"const updatedSurname =pm.variables.replaceIn('{{$randomLastName}}');\r",
+									"pm.collectionVariables.set(\"updatedLastName\", updatedSurname);\r",
+									"\r",
+									"console.log(updatedSurname);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"id": "37eaa799-789f-47e2-b231-400e66c76032"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"id": "7a60eb90-f813-46d0-bc88-2ff530952713"
+							}
+						}
+					],
+					"id": "b35d100a-0055-433f-bf01-975cac72c906",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=<token_value>",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtaW46cGFzc3dvcmQxMjM=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"firstname\": \"{{updatedFirstName}}\",\r\n        \"lastname\": \"{{updatedLastName}}\",\r\n        \"totalprice\": 450,\r\n        \"depositpaid\": false,\r\n        \"bookingdates\": {\r\n            \"checkin\": \"2024-01-01\",\r\n            \"checkout\": \"2025-02-05\"\r\n        },\r\n        \"additionalneeds\": \"Lunch\"\r\n }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{bookingId}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{bookingId}}"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PartialUpdateBooking",
+					"id": "852ef09e-7ca6-478e-8d61-66ef92d91ab8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=<token_value>",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtaW46cGFzc3dvcmQxMjM=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"{{$randomFirstName}}\",\r\n    \"lastname\" : \"{{$randomLastName}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{bookingId}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{bookingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteBooking",
+					"id": "e69f4156-e0fa-4ae9-8e73-e9b056edb08b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token=<token_value>",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtaW46cGFzc3dvcmQxMjM=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{bookingId}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{bookingId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "4a4732b1-f486-4da6-84ee-b99409f3d9ae"
+		},
+		{
+			"name": "Ping",
+			"item": [
+				{
+					"name": "HealthCheck",
+					"id": "4a0d3572-95f1-4dd8-85cc-381d79501b53",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/ping",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "ee940bb0-f76d-4c3c-b9d8-65459115536e"
+		}
+	],
+	"variable": [
+		{
+			"id": "50c54d8d-d329-4421-9933-be48e58fd2ac",
+			"key": "fakeFirstName",
+			"value": ""
+		},
+		{
+			"id": "406b5abe-3ea7-4263-883a-1d6ec475356b",
+			"key": "fakeLastName",
+			"value": ""
+		},
+		{
+			"id": "63695bfb-587d-4747-906a-37c1e100a7e5",
+			"key": "updatedFakeName",
+			"value": ""
+		},
+		{
+			"id": "0b9953eb-e339-4597-adc3-166996f4a95a",
+			"key": "updatedLastName",
+			"value": ""
+		},
+		{
+			"id": "ef733ade-0833-4332-acf0-1592a1e283b0",
+			"key": "updatedFirstName",
+			"value": ""
+		},
+		{
+			"id": "85423a4a-bf64-47a3-8a39-fd6ee1b1c4e2",
+			"key": "fakeDepositPaid",
+			"value": ""
+		}
+	]
+}
